@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Class-Path: lib/gson-2.8.6.jar lib/log4j-1.2.17.jar
+Build-Jdk-Spec: 1.8
+Created-By: Maven Integration for Eclipse
+Main-Class: com.example.demo.module1.App
+
