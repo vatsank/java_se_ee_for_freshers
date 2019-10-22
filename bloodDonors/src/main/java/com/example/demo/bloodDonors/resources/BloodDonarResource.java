@@ -1,12 +1,14 @@
 package com.example.demo.bloodDonors.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -125,6 +127,53 @@ public class BloodDonarResource {
 				}
 			     
 			return Response.status(201).entity(donor).build();
+		}
+		
+		// webapi/donors/
+		@DELETE
+		@Produces(MediaType.APPLICATION_JSON)
+		@Consumes(MediaType.APPLICATION_JSON)
+		public Response removeDonor(BloodDonor donor) {
+			
+			BloodDonor deleted = null;
+			 try {
+				int rowDeleted = this.dao.remove(donor.getMobileNumber());
+				
+				if(rowDeleted==1) {
+					deleted = donor;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			 return Response.status(204).entity(deleted).build();
+		}
+		//webapi/donors/delbyId?phoneNumber=2020
+		@DELETE
+		@Path("/delById")
+		@Produces(MediaType.APPLICATION_JSON)
+		public Response removeDonorById(@QueryParam("phoneNumber") long mobileNumber) {
+			
+			BloodDonor itemToDelete=null;
+			BloodDonor deletedItem =null;
+			 try {
+				 
+				 itemToDelete = this.dao.findById(mobileNumber);
+
+				 System.out.println(itemToDelete);
+				int rowDeleted = this.dao.remove(mobileNumber);
+				
+			  if(rowDeleted==1) {
+				  deletedItem = itemToDelete;
+			  }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			 
+		//	 return Response.status(200).entity(deletedItem).build();
+
+			
+			 return Response.status(204).entity(deletedItem).build();
 		}
 		
 }

@@ -55,12 +55,12 @@ public class BloodDonorDaoImpl implements BloodDonorDAO<BloodDonor> {
 	}
 
 	@Override
-	public BloodDonor findById(int id) throws SQLException {
+	public BloodDonor findById(long id) throws SQLException {
 
 		String sql = "select * from  BLOODDONOR	 where mobileNumber =?";
 		PreparedStatement pstmt= createStatement(sql);
 		BloodDonor donor =null;
-		pstmt.setInt(1,id);
+		pstmt.setLong(1,id);
 		
 		ResultSet rs = pstmt.executeQuery();
 		
@@ -77,11 +77,11 @@ public class BloodDonorDaoImpl implements BloodDonorDAO<BloodDonor> {
 	}
 
 	@Override
-	public int remove(int id) throws SQLException {
+	public int remove(long id) throws SQLException {
 		String sql = "delete  from BLOODDONOR	 where mobileNumber =?";
 		PreparedStatement pstmt= createStatement(sql);
 		
-		pstmt.setInt(1,id);
+		pstmt.setLong(1,id);
 		
 		return  pstmt.executeUpdate();
 		
