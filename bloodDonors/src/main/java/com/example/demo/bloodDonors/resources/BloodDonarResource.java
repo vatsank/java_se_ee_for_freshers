@@ -10,24 +10,26 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.training.daos.BloodDonorDaoImpl;
 import com.training.entity.BloodDonor;
-import com.training.utils.DbConnection;
+import javax.ws.rs.core.GenericEntity;
 
 
-// url pattern can be verb or noun or propernoun	
+import java.sql.SQLException;
+import java.util.*;
 
-//	http://localhost:4040/bloodDonors/urlPattern
-//		resource name will be noun it SHOULD NEVER BE VERB
 
-//		http://host:port/webapprefix/urpatternl/resourceName   
 	
 @Path("donors")
 public class BloodDonarResource {
 
 	
+	private BloodDonorDaoImpl dao;
+	
 	    public BloodDonarResource() {
 		super();
 	
+		dao = new BloodDonorDaoImpl();
 		System.out.println("Resource Initilized");
 	}
 
@@ -35,11 +37,17 @@ public class BloodDonarResource {
 	    @Produces(MediaType.APPLICATION_JSON)
 	    public Response getIt() {
 	    	
-	    	BloodDonor ramesh = new BloodDonor(949494, "Ramesh", "bpos");
+	    	List<BloodDonor> list=null;
+			try {
+				list = dao.findAll();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 	    	
-	    	System.out.println(DbConnection.getOracleConnection());
+			 GenericEntity< List< BloodDonor > > entity= 	new GenericEntity< List< BloodDonor> >( list ) { };
 	    	
-	        return Response.status(200).entity(ramesh).build();
+	        return Response.status(200).entity(entity).build();
 	        
 	    }
 		
@@ -62,28 +70,41 @@ public class BloodDonarResource {
 		public Response getByGroup(@PathParam("reqGroup") String group) {
 			
 		
-			
-	BloodDonor donor = new BloodDonor(949494, "Magesh", "opos");
+	    	List<BloodDonor> list=null;
+
 	
-	    if(group.equalsIgnoreCase("apos")) {
-	    	donor = new BloodDonor(11444, "Suresh", "apos");
-	    }
-	
+	    
+	    	try {
+				list = dao.findByGroup(group);
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 	    	
-	        return Response.status(200).entity(donor).build();
+			 GenericEntity< List< BloodDonor > > entity= 	new GenericEntity< List< BloodDonor> >( list ) { };
+	    	
+	        return Response.status(200).entity(entity).build();
+	        
+	    	
 		}
 		
 		
-//		@Produces(MediaType.APPLICATION_JSON)
-//		@Consumes(MediaType.APPLICATION_JSON)
-//		@Post
-//		public Response addDonor(BloodDonor donor) {
-//			
-//			return Response.status(201).entity(donor).build();
-//		}
+		@Produces(MediaType.APPLICATION_JSON)
+		@Consumes(MediaType.APPLICATION_JSON)
+		@POST
+	public Response addDonor(BloodDonor donor) {
+
+			try {
+				this.dao.add(donor);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return Response.status(201).entity(donor).build();
+		}
 		
 		
-		
+		@Path("/frm")
 		@POST
 		@Produces(MediaType.APPLICATION_JSON)
 		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -92,6 +113,17 @@ public class BloodDonarResource {
 				 @FormParam("bloodGroup") String bloodGroup) {
 			
 			BloodDonor donor = new BloodDonor(mobileNumber, donorName, bloodGroup);
+			
+			     try {
+					int rowAdded = dao.add(donor);
+					if(rowAdded!=1) {
+						donor =null;
+					}
+				} catch (SQLException e) {
+					
+					e.printStackTrace();
+				}
+			     
 			return Response.status(201).entity(donor).build();
 		}
 		
