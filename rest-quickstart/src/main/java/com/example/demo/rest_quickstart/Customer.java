@@ -1,12 +1,31 @@
 package com.example.demo.rest_quickstart;
+import java.util.*;
+import javax.ws.rs.core.Link;
 
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Customer {
 	private int customerId;
 	private String customerName;
-	private long mobileNumber;
+	private long mobileNumber;   
+	
+	@XmlJavaTypeAdapter(Link.JaxbAdapter.class)
+    private Link links;
+
+	
+	
+	public Link getLinks() {
+		return links;
+	}
+	public void setLinks(Link links) {
+		this.links = links;
+	}
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
 	public Customer() {
 		super();
-		// TODO Auto-generated constructor stub
+	
 	}
 	public Customer(int customerId, String customerName, long mobileNumber) {
 		super();

@@ -8,8 +8,11 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import com.training.daos.CustomerDaoImpl;
 
@@ -47,12 +50,17 @@ public class CustomerResource {
 	@GET
 	@Path("{customerId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response  getCustomerById(@PathParam("customerId") int id) {
+	public Response  getCustomerById(@PathParam("customerId") int id,@Context UriInfo uriInfo) {
 
-		
+		Link self=null;
 		   Customer cust=null;
 		try {
 			cust = dao.findById(id);
+			
+	        self = Link.fromUriBuilder(uriInfo.getAbsolutePathBuilder()).rel("self").build();
+
+
+	         cust.setLinks(self);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

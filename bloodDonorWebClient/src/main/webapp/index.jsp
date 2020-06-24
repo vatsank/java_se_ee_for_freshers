@@ -17,7 +17,12 @@
 			  success:function(data){console.log(data)}
 	  };
 	  
-	  $.ajax(config);
+	  var delConfig= {
+			  type:"DELETE",
+			  url:"http://localhost:2020/bloodDonors/webapi/donors/delById/?phoneNumber=4848483",
+			  success:function(data){console.log("One row Deleted"+data)}
+	  }
+	  $.ajax(delConfig);
   });
   
  
